@@ -1,7 +1,51 @@
 const http = require('http');
+const fs = require('fs');
 
 const server = http.createServer((req, res) => {
-    console.log('request made');
+    console.log(req.url, req.method);
+    
+    // set header content type
+    res.setHeader('Content-Type', 'text/html');
+
+    // res.write('<head><link rel="stylesheet" href="#" /></head>');
+    // res.write('<p>hello, ninjas</p>');
+    // res.write('<p>hello again, ninjas</p>');
+    // res.end();
+
+    let path = './views/';
+    res.statusCode = 200;
+
+    switch (req.url) {
+        case '/':
+            path += 'index.html';
+            break;
+        
+        case '/about':
+            path += 'about.html';
+            break;
+        
+        case '/about-me':
+            res.setHeader('Location', '/about');
+            res.statusCode = 301;
+            res.end();
+            return;
+        
+        default:
+            path += '404.html';
+            res.statusCode = 404;
+    }
+
+    // send an html file
+    fs.readFile(path, (err, data) => {
+        if (err) {
+            res.statusCode = 500;
+            console.log(err);
+            res.end();
+            return;
+        }
+
+        res.end(data);
+    });
 });
 
 server.listen(3000, 'localhost', () => {
