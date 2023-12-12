@@ -3,12 +3,14 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Blog = require('./models/blog');
 
+// require environment variables
+require('dotenv').config();
+
 // express app
 const app = express();
 
 // connect to mongodb
-const dbURI = 'mongodb+srv://netninja:test1234@nodetuts.gjguxmv.mongodb.net/node-tuts?retryWrites=true&w=majority';
-mongoose.connect(dbURI)
+mongoose.connect(process.env.DB_URI)
     .then((result) => app.listen(3000))
     .catch((err) => console.log(err));
 
